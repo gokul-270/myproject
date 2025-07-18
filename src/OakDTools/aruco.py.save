@@ -1,0 +1,249 @@
+#!/usr/bin/env python3
+
+import cv2
+import depthai as dai
+import pickle as pkl
+import numpy as np
+import os
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from cv2 import aruco
+from calc import HostSpatialsCalc
+from utility import *
+import math
+import time
+import argparse  # Added for command-line argument parsing
+
+# Command-line argument for number of runs
+parser = argparse.ArgumentParser(description='ArUco Marker Detection with OAK-D Camera')
+parser.add_argument('--num_runs', type=int, default=100, help='Number of frames to process')
+args = parser.parse_args()
+NUM_RUNS = args.num_runs  # Number of runs specified by user (default: 100)
+
+# File paths for logging
+CentroidFilePath = '/home/ubuntu/.ros/centroid.txt'
+CottonDetailsTxtFilePath = '/home/ubuntu/pragati/outputs/cotton_details.txt'
+ArucoLogFilePath = '/home/ubuntu/pragati/outputs/aruco_spatials_log.txt'  
+clea# New log file for all ArUco points
+ArucoDetectorInputImage = '/home/ubuntu/pragati/inputs/ArucoInputImage.jpg'
+ArucoDetectorOutputImage = '/home/ubuntu/pragati/outputs/ArucoDetectorOutput.jpg'
+
+# Start defining a pipeline
+pipeline = dai.Pipeline()
+monoLeft = pipeline.createMonoCamera()
+monoRight = pipeline.createMonoCamera()
+stereo = pipeline.createStereoDepth()
+stereo.setDepthAlign(dai.CameraBoardSocket.RGB)
+xoutDepth = pipeline.createXLinkOut()
+xoutRight = pipeline.createXLinkOut()
+
+xoutDepth.setStreamName("depth")
+xoutRight.setStreamName('right')
+
+# MonoCamera settings
+monoLeft.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+monoLeft.setBoardSocket(dai.CameraBoardSocket.LEFT)
+monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+monoRight.setBoardSocket(dai.CameraBoardSocket.RIGHT)
+monoRight.out.link(xoutRight.input)
+
+# StereoDepth settings
+outputDepth = True
+outputRectified = True
+lrcheck = True
+subpixel = True
+extendedDisparity = False
+
+stereo.setOutputDepth(outputDepth)
+stereo.setOutputRectified(outputRectified)
+stereo.setConfidenceThreshold(255)
+stereo.setLeftRightCheck(lrcheck)
+stereo.setSubpixel(subpixel)
+monoLeft.out.link(stereo.left)
+monoRight.out.link(stereo.right)
+stereo.depth.link(xoutDepth.input)
+stereo.setExtendedDisparity(extendedDisparity)
+stereo.initialConfig.setMedianFilter(dai.MedianFilter.KERNEL_7x7)
+stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_ACCURACY)
+
+# Filter settings
+config = stereo.initialConfig.get()
+config.postProcessing.speckleFilter.enable = True
+config.postProcessing.speckleFilter.speckleRange = 50
+config.postProcessing.temporalFilter.enable = True
+config.postProcessing.temporalFilter.persistencyMode = dai.StereoDepthConfig.PostProcessing.TemporalFilter.PersistencyMode.VALID_2_IN_LAST_4
+config.postProcessing.spatialFilter.enable = True
+config.postProcessing.spatialFilter.holeFillingRadius = 2
+config.postProcessing.spatialFilter.numIterations = 5
+config.postProcessing.decimationFilter.decimationFactor = 1
+stereo.initialConfig.set(config)
+
+# Initialize device
+device = dai.Device(pipeline, usb2Mode=True)
+device.startPipeline()
+
+# Output queues
+depthQueue = device.getOutputQueue(name="depth", maxSize=4, blocking=False)
+if depthQueue is None:
+    print("Not getting Depth Queue")
+    exit(1)
+
+qRight = device.getOutputQueue(name="right", maxSize=4, blocking=False)
+if qRight is None:
+    print("Not getting Right Queue")
+    exit(1)
+
+# ArUco declaration
+aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
+parameters = aruco.DetectorParameters_create()
+text = TextHelper()
+hostSpatials = HostSpatialsCalc(device)
+delta = 2
+hostSpatials.setDeltaRoi(delta)
+
+# Run the specified number of times
+for run in range(NUM_RUNS):
+    print(f"Starting run {run + 1}/{NUM_RUNS}")
+    inRight = None
+    print("Waiting for 5 seconds before capturing image")
+    time.sleep(5)
+    inDepth = depthQueue.get().getFrame()  # Blocking call
+    inRight = qRight.tryGet()
+    
+    if inRight is None:
+        print("Error: OakD not capturing frames")
+        print("Error: Check Camera")
+        exit(1)  # Preserve original behavior: exit on frame capture failure
+
+    timestamp = time.strftime("%d%b%Y_%H%M%S", time.gmtime())
+    frameRight = inRight.getCvFrame()
+    
+    # Save input image for debugging
+    if cv2.imwrite(ArucoDetectorInputImage, frameRight):
+        print(f"ArucoDetector.py: Wrote {ArucoDetectorInputImage}")
+    else:
+        print(f"ArucoDetector.py: Failed to write {ArucoDetectorInputImage}")
+        exit(1)  # Preserve original behavior
+
+    # Detect ArUco markers
+    corners, ids, rejectedImgPoints = aruco.detectMarkers(frameRight, aruco_dict, parameters=parameters)
+    frame_markers = aruco.drawDetectedMarkers(frameRight.copy(), corners, ids)
+    
+    print(f"No Of Aruco Corners Found: {len(corners)}")
+    if len(corners) == 0:
+        print("ArucoMarkerDetect: Failed to detect corners")
+        print("ArucoDetector.py: Error Exiting Program")
+        exit(1)  # Preserve original behavior
+
+    # Lists to store spatial data for all markers (for new log file)
+    all_spatials = []
+    y_muliplication_factor = -1  # Coordinate system hack
+    # Variables for original files (to store last marker's corners)
+    last_top_left_spatial = None
+    last_top_right_spatial = None
+    last_bottom_right_spatial = None
+    last_bottom_left_spatial = None
+
+    if len(corners) > 0:
+        ids = ids.flatten()
+        for (markerCorner, markerID) in zip(corners, ids):
+            print(f"Marker Corners (ID {markerID}):\n{markerCorner}")
+            corners = markerCorner.reshape((4, 2))
+            (topLeft, topRight, bottomRight, bottomLeft) = corners
+            topRight = (int(topRight[0]), int(topRight[1]))
+            bottomRight = (int(bottomRight[0]), int(bottomRight[1]))
+            bottomLeft = (int(bottomLeft[0]), int(bottomLeft[1]))
+            topLeft = (int(topLeft[0]), int(topLeft[1]))
+            
+            # Calculate spatial coordinates
+            top_left_spatial, centroid = hostSpatials.calc_spatials(inDepth, (topLeft[0], topLeft[1]))
+            top_right_spatial, centroid = hostSpatials.calc_spatials(inDepth, (topRight[0], topRight[1]))
+            bottom_right_spatial, centroid = hostSpatials.calc_spatials(inDepth, (bottomRight[0], bottomRight[1]))
+            bottom_left_spatial, centroid = hostSpatials.calc_spatials(inDepth, (bottomLeft[0], bottomLeft[1]))
+            
+            # Store spatial data for new log file
+            marker_spatials = {
+                'markerID': markerID,
+                'top_left': top_left_spatial,
+                'top_right': top_right_spatial,
+                'bottom_right': bottom_right_spatial,
+                'bottom_left': bottom_left_spatial
+            }
+            all_spatials.append(marker_spatials)
+            
+            # Update last marker's coordinates for original files
+            last_top_left_spatial = top_left_spatial
+            last_top_right_spatial = top_right_spatial
+            last_bottom_right_spatial = bottom_right_spatial
+            last_bottom_left_spatial = bottom_left_spatial
+            
+            # Draw rectangles and annotate coordinates
+            text.rectangle(frameRight, (topLeft[0]-delta, topLeft[1]-delta), (topLeft[0]+delta, topLeft[1]+delta))
+            text.putText(frameRight, 
+                         f"X: {'{:.3f}'.format(top_left_spatial['x']/1000) if not math.isnan(top_left_spatial['x']) else '--'} "
+                         f"Y: {'{:.3f}'.format(top_left_spatial['y']/1000) if not math.isnan(top_left_spatial['y']) else '--'} "
+                         f"Z: {'{:.3f}'.format(top_left_spatial['z']/1000) if not math.isnan(top_left_spatial['z']) else '--'}", 
+                         (topLeft[0] - 50, topLeft[1] - 30))
+            text.rectangle(frameRight, (topRight[0]-delta, topRight[1]-delta), (topRight[0]+delta, topRight[1]+delta))
+            text.putText(frameRight, 
+                         f"X: {'{:.3f}'.format(top_right_spatial['x']/1000) if not math.isnan(top_right_spatial['x']) else '--'} "
+                         f"Y: {'{:.3f}'.format(top_right_spatial['y']/1000) if not math.isnan(top_right_spatial['y']) else '--'} "
+                         f"Z: {'{:.3f}'.format(top_right_spatial['z']/1000) if not math.isnan(top_right_spatial['z']) else '--'}", 
+                         (topRight[0] + 10, topRight[1] + 10))
+            text.rectangle(frameRight, (bottomRight[0]-delta, bottomRight[1]-delta), (bottomRight[0]+delta, bottomRight[1]+delta))
+            text.putText(frameRight, 
+                         f"X: {'{:.3f}'.format(bottom_right_spatial['x']/1000) if not math.isnan(bottom_right_spatial['x']) else '--'} "
+                         f"Y: {'{:.3f}'.format(bottom_right_spatial['y']/1000) if not math.isnan(bottom_right_spatial['y']) else '--'} "
+                         f"Z: {'{:.3f}'.format(bottom_right_spatial['z']/1000) if not math.isnan(bottom_right_spatial['z']) else '--'}", 
+                         (bottomRight[0] + 10, bottomRight[1] + 10))
+            text.rectangle(frameRight, (bottomLeft[0]-delta, bottomLeft[1]-delta), (bottomLeft[0]+delta, bottomLeft[1]+delta))
+            text.putText(frameRight, 
+                         f"X: {'{:.3f}'.format(bottom_left_spatial['x']/1000) if not math.isnan(bottom_left_spatial['x']) else '--'} "
+                         f"Y: {'{:.3f}'.format(bottom_left_spatial['y']/1000) if not math.isnan(bottom_left_spatial['y']) else '--'} "
+                         f"Z: {'{:.3f}'.format(bottom_left_spatial['z']/1000) if not math.isnan(bottom_left_spatial['z']) else '--'}", 
+                         (bottomLeft[0] - 50, bottomLeft[1] + 30))
+        
+        # Save output image (overwritten each run, as in original)
+        if cv2.imwrite(ArucoDetectorOutputImage, frameRight):
+            print(f"ArucoDetector.py: Wrote {ArucoDetectorOutputImage}")
+        else:
+            print(f"ArucoDetector.py: Failed to write {ArucoDetectorOutputImage}")
+            exit(1)  # Preserve original behavior
+        
+        # Write last marker's coordinates to original files (overwritten, as in original)
+        if last_top_left_spatial is not None:  # Ensure a marker was processed
+            ContentTxt = (
+                f"{last_top_left_spatial['x']/1000:.3f} {last_top_left_spatial['y']*y_muliplication_factor/1000:.3f} {last_top_left_spatial['z']/1000:.3f}\n"
+                f"{last_top_right_spatial['x']/1000:.3f} {last_top_right_spatial['y']*y_muliplication_factor/1000:.3f} {last_top_right_spatial['z']/1000:.3f}\n"
+                f"{last_bottom_right_spatial['x']/1000:.3f} {last_bottom_right_spatial['y']*y_muliplication_factor/1000:.3f} {last_bottom_right_spatial['z']/1000:.3f}\n"
+                f"{last_bottom_left_spatial['x']/1000:.3f} {last_bottom_left_spatial['y']*y_muliplication_factor/1000:.3f} {last_bottom_left_spatial['z']/1000:.3f}\n"
+            )
+            CottonDetailsTxt = (
+                f"0 0 {last_top_left_spatial['x']/1000:.3f} {last_top_left_spatial['y']*y_muliplication_factor/1000:.3f} {last_top_left_spatial['z']/1000:.3f}\n"
+                f"0 0 {last_top_right_spatial['x']/1000:.3f} {last_top_right_spatial['y']*y_muliplication_factor/1000:.3f} {last_top_right_spatial['z']/1000:.3f}\n"
+                f"0 0 {last_bottom_right_spatial['x']/1000:.3f} {last_bottom_right_spatial['y']*y_muliplication_factor/1000:.3f} {last_bottom_right_spatial['z']/1000:.3f}\n"
+                f"0 0 {last_bottom_left_spatial['x']/1000:.3f} {last_bottom_left_spatial['y']*y_muliplication_factor/1000:.3f} {last_bottom_left_spatial['z']/1000:.3f}\n"
+            )
+            
+            with open(CentroidFilePath, 'w') as centroid_file:
+                centroid_file.write(ContentTxt)
+            with open(CottonDetailsTxtFilePath, 'w') as cotton_file:
+                cotton_file.write(CottonDetailsTxt)
+            print(f"Wrote to {CentroidFilePath} and {CottonDetailsTxtFilePath}")
+            print(ContentTxt)
+        
+        # Write all markers' coordinates to new log file (appended)
+        ArucoLogTxt = f"Run {run + 1} - Timestamp: {timestamp}\n"
+        for marker in all_spatials:
+            ArucoLogTxt += f"Marker ID: {marker['markerID']}\n"
+            ArucoLogTxt += f"Top Left: X: {marker['top_left']['x']/1000:.3f} Y: {marker['top_left']['y']*y_muliplication_factor/1000:.3f} Z: {marker['top_left']['z']/1000:.3f}\n"
+            ArucoLogTxt += f"Top Right: X: {marker['top_right']['x']/1000:.3f} Y: {marker['top_right']['y']*y_muliplication_factor/1000:.3f} Z: {marker['top_right']['z']/1000:.3f}\n"
+            ArucoLogTxt += f"Bottom Right: X: {marker['bottom_right']['x']/1000:.3f} Y: {marker['bottom_right']['y']*y_muliplication_factor/1000:.3f} Z: {marker['bottom_right']['z']/1000:.3f}\n"
+            ArucoLogTxt += f"Bottom Left: X: {marker['bottom_left']['x']/1000:.3f} Y: {marker['bottom_left']['y']*y_muliplication_factor/1000:.3f} Z: {marker['bottom_left']['z']/1000:.3f}\n\n"
+        
+        with open(ArucoLogFilePath, 'a') as aruco_log:
+            aruco_log.write(ArucoLogTxt)
+        print(f"Appended to {ArucoLogFilePath}")
+
+print(f"Completed {NUM_RUNS} runs")

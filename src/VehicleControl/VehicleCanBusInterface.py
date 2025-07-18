@@ -1,10 +1,11 @@
 #History
-#Last Date When Code Updated : 6JUN2023
+#Last Date When Code Updated : 14JUL2023
 # 16MAY2023 : Added the traptrajVel and acceleration values in code for variable speed  purpose.
 # 16MAY2023 : Vehicle Steering is using only 2 front wheel equal direction steering instead of ACKERMAN steering
 # 17May2023: Added the steering wheel trap traj values
 # 24May2023: Added the current limits and velocity limits value along with the check funtion of trap traj values
 # 6JUN2023: corrected the calculation of the distance moved
+# 14JUL2023: Fixed for Automaticstaightenning of steering wheel
 #import gpiozero
 import os
 import can
@@ -32,8 +33,8 @@ global msg
 global CurrentPos
 global IncrementalPos
 global TargetPos
-SteeringMotorLeft = 1
-SteeringMotorRight = 3
+SteeringMotorLeft = 3
+SteeringMotorRight = 1
 SteeringMotorFront = 5 
 FrontDriveMotor = 4
 LeftBackDriveMotor = 0 
@@ -508,24 +509,6 @@ def SetMotorToClosedLoop(MotorId):
     print("Message NOT sent!  Please verify can is working first")
     return (False)
   return(True)
-
-def SetMotorToEncoderIndexSearch(MotorId):
-  global bus 
-  global db
-  #print("\nRequesting AXIS_STATE_ENCODER_INDEX_SEARCH (0x0x6) on axisID: " + str(MotorId))
-  msg = db.get_message_by_name('Set_Axis_State')
-  data = msg.encode({'Axis_Requested_State': 0x06}) # EncoderIndexSearch 
-  msg = can.Message(arbitration_id=msg.frame_id | MotorId << 5, is_extended_id=False, data=data)
-  #print(db.decode_message('Set_Axis_State', msg.data))
-  #print(msg)
-
-  try:
-    bus.send(msg)
-    #print("Message sent on {}".format(bus.channel_info))
-  except can.CanError:
-    print("Message NOT sent!  Please verify can is working first")
-    return (False)
-  return(True)
 '''
 ## End SetMotorControlToVelocityMode
 def SetMotorControlToVelocityMode(MotorId):
@@ -907,7 +890,7 @@ def SetVehicleToIdle():
    SetDriveMotorsToIdle()
    SetSteeringMotorsToIdle()
 
-def Move3WheelSteeringMotorsTo(AbsoluteRotation): #Absolute Rotation
+def Move2WheelSteeringMotorsTo(AbsoluteRotation): #Absolute Rotation
    # AbsoluteRotation should be less 0.5 and greater than -05
    # the negative sign in the front wheel steering motor is for the three wheel steering.
    MoveMotorPositionAbsolute(SteeringMotorLeft ,AbsoluteRotation)
@@ -929,9 +912,9 @@ def MoveSteeringMotorsTo(AbsoluteRotation): #Absolute Rotation
    # In Manual Mode only the Front Steering Motor is steered.
     # AbsoluteRotation should be less 0.5 and greater than -05
    # the negative sign in the front wheel steering motor is for the three wheel steering.
-   MoveMotorPositionAbsolute(SteeringMotorLeft ,AbsoluteRotation)
-   MoveMotorPositionAbsolute(SteeringMotorRight ,AbsoluteRotation)
-#   MoveMotorPositionAbsolute(SteeringMotorFront ,-AbsoluteRotation)
+   #MoveMotorPositionAbsolute(SteeringMotorLeft ,AbsoluteRotation)
+   #MoveMotorPositionAbsolute(SteeringMotorRight ,AbsoluteRotation)
+   MoveMotorPositionAbsolute(SteeringMotorFront ,-AbsoluteRotation)
 # Endof def MoveSteeringMotorsTo(
 
 # to integrate the row to row movement on 30 Mar 2023
@@ -983,10 +966,10 @@ def SetVehicleToPivot(PivotDirection):
 #END of def SetVehicleToPivot():
 
  
-def AutomaticstraighteningSteeringMotorsTo(RightRotation,LeftRotation,BackRotation): #Absolute Rotation
+def AutomaticstraighteningSteeringMotorsTo(BackRotation): #Absolute Rotation
     # AbsoluteRotation should be less 0.5 and greater than -05
-   MoveMotorPositionAbsolute(SteeringMotorLeft ,LeftRotation)
-   MoveMotorPositionAbsolute(SteeringMotorRight ,RightRotation)
+   #MoveMotorPositionAbsolute(SteeringMotorLeft ,LeftRotation)
+   #MoveMotorPositionAbsolute(SteeringMotorRight ,RightRotation)
    MoveMotorPositionAbsolute(SteeringMotorFront ,BackRotation)
  
 def AkermannsSteeringMotorsTo(AbsoluteRotation): #Absolute Rotation
@@ -1015,8 +998,8 @@ def AkermannsSteeringMotorsTo(AbsoluteRotation): #Absolute Rotation
    if (AbsoluteRotation>0):
      akermansrotation_outside_AbsoluteRotation=(outside_wheel_angle/360)* GearRatioSteeringMotor
      akermansrotation_inside_AbsoluteRotation=(inside_wheel_angle/360)* GearRatioSteeringMotor
-     MoveMotorPositionAbsolute(SteeringMotorRight ,akermansrotation_outside_AbsoluteRotation)
-     MoveMotorPositionAbsolute(SteeringMotorLeft ,akermansrotation_inside_AbsoluteRotation)
+     MoveMotorPositionAbsolute(SteeringMotorLeft ,akermansrotation_outside_AbsoluteRotation)
+     MoveMotorPositionAbsolute(SteeringMotorRight ,akermansrotation_inside_AbsoluteRotation)
      print(akermansrotation_outside_AbsoluteRotation)
      print(akermansrotation_inside_AbsoluteRotation)
 
@@ -1024,8 +1007,8 @@ def AkermannsSteeringMotorsTo(AbsoluteRotation): #Absolute Rotation
    if (AbsoluteRotation<0):
      akermansrotation_outside_AbsoluteRotation=-(outside_wheel_angle/360)* GearRatioSteeringMotor
      akermansrotation_inside_AbsoluteRotation=-(inside_wheel_angle/360)* GearRatioSteeringMotor
-     MoveMotorPositionAbsolute(SteeringMotorLeft ,akermansrotation_outside_AbsoluteRotation)
-     MoveMotorPositionAbsolute(SteeringMotorRight ,akermansrotation_inside_AbsoluteRotation) 
+     MoveMotorPositionAbsolute(SteeringMotorRight ,akermansrotation_outside_AbsoluteRotation)
+     MoveMotorPositionAbsolute(SteeringMotorLeft ,akermansrotation_inside_AbsoluteRotation) 
      print(akermansrotation_outside_AbsoluteRotation)
      print(akermansrotation_inside_AbsoluteRotation)
 
@@ -1277,9 +1260,11 @@ def MoveVehicle(IncrementalDistance, AbsoluteRotation): # Incremental Distance i
    # Replacing the Torque mode with Position Control Mode 
 #   MoveSteeringMotorsTo(MotorRotationAngle)
    #Move3WheelSteeringMotorsTo(MotorRotationAngle)
+   print("MR:INCREMENTAL DISTANCE")
    MoveDriveMotorsIncremental(IncrementalDistance) 
-   AkermannsSteeringMotorsTo(MotorRotationAngle)
-#   MoveSteeringMotorsTo(MotorRotationAngle)
+   #AkermannsSteeringMotorsTo(MotorRotationAngle)
+   print("MR:MOTOR_ROTATION_ANGLE")
+   MoveSteeringMotorsTo(MotorRotationAngle)
    '''
    #TODO : replace this by reading Position of the wheel
    DrivingWaitTime = abs(IncrementalDistance) * TimeForUnitDistance 

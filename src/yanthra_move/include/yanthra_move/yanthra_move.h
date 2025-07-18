@@ -1,6 +1,5 @@
 // History 
-// Last updated 4MAR2025
-// 04MAR2025 : changed from spherical to cylindrical coordinate system at ConvertXYZToPolarFLUROSCoordinates
+// Last updated 6SEP2023
 // 6SEP2023 : Added a function ConvertXYZToPolarFLUROSCoordinates
 /* ARM Movement Configuration */
 
@@ -62,7 +61,7 @@ double height_scan_step;
 #endif */
 
 /* For Joint 3 */
-#define PHI_MIN (-1.570796)                 // PHI_MIN is set as  0 radians	
+#define PHI_MIN (-1.570795)                 // PHI_MIN is set as  0 radians
 #define PHI_MAX (1.570795)          // PHI_MAX is set as 1.570795 radians which is 90 degrees
 double joint3_parking_pose;
 double joint3_homing_position ;
@@ -71,8 +70,8 @@ std::vector<double> joint3_zero_poses;
 std::vector<double> joint_poses;
 
 /* For Joint 4 */
-#define THETA_MIN	(-3.3561925)	// -135 deg TODO URDF limit is -110 deg
-#define THETA_MAX	(3.3561925) 	// 135 deg TODO URDF limit is 110 deg
+#define THETA_MIN	(-0.220)	// -135 deg TODO URDF limit is -110 deg
+#define THETA_MAX	(0.220) 	// 135 deg  TODO URDF limit is +110 deg
 double joint4_parking_pose;
 double joint4_homing_position ;
 bool joint4_multiple_zero_pose;
@@ -140,7 +139,6 @@ void ConvertXYZToPolarFLUROSCoordinates(double x, double y, double z, double* r,
     // This is very specifc to FLU coordinate system Forward is X, Left is Y, Up is Z
     // A positive Z will require a -negative rotation angle around Y axis
     // So Z is specifically multiplied by -1.0 to achieve this
-    // changed the formula from spherical to cylindrical coordinate system.
 	ROS_INFO("Input x=%lf, y=%lf, z=%lf", x, y, z);
 	*r = sqrt(x*x + z*z);
 	*phi = asin( z/ sqrt(x*x + z*z ));
@@ -168,8 +166,8 @@ bool check_reachability(double r, double theta, double phi)
 	}
 	else if((phi < PHI_MIN) || (phi > PHI_MAX)){
 		ROS_INFO("Phi value prasobh =%f",phi);
-        ROS_ERROR("phi min =%f",PHI_MIN);
-        ROS_ERROR("phi max =%f",PHI_MAX);
+                ROS_ERROR("phi min =%f",PHI_MIN);
+                ROS_ERROR("phi max =%f",PHI_MAX);
 		ROS_ERROR("Phi is out of bound");
 	}
 	else

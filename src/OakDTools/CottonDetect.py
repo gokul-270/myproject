@@ -43,7 +43,7 @@ print ("Logging CottonDetect.py logs to /tmp/CottonDetectCommunicationLog.txt\n"
 Initialisation_time_start = time.monotonic()
 # Get argument first
 nnBlobPath = str((Path(__file__).parent / Path('best_openvino_2022.1_6shave.blob')).resolve().absolute())
-#nnBlobPath = str((Path(__file__).parent / Path('yolov5_openvino_2021.4_6shave (3).blob')).resolve().absolute())
+#nnBlobPath = str((Path(__file__).parent / Path('best_openvino_2022.1_6shave.blob')).resolve().absolute())
 if len(sys.argv) > 1:
     nnBlobPath = sys.argv[1]
 
@@ -480,4 +480,4 @@ def DontKnow() :
                    #pcl_data = pcl_data.reshape(3, -1).T.astype(np.float64) / 1000.0
                    pcl_converter.visualize_pcl(pcl_data, downsample=downsample_pcl)
                    open3d.io.write_point_cloud("DetectionOutput.pcd", pcl_data)
-### ENDOF  def DontKnow() :                   
+### ENDOF  def DontKnow() :

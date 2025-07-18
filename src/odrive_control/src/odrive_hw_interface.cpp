@@ -104,7 +104,7 @@ void* DUMMY_write_task(void * arg) {
  if (count== 0) PrintThreadID();
  if ( ++count  == 10 ) {
 	count = 0 ;
-   printf("%s Testing Motor canid 0 \n", __func__);
+   printf("%s Testing Motor can_id 0 \n", __func__);
    position = position * -1 ;
    //SimpleMotorTest(*ControllerPtr, 0, position );
   }
@@ -119,7 +119,7 @@ void* DUMMY_read_task(void * arg) {
  if (count== 0) PrintThreadID();
  if ( ++count  == 10 ) {
     count = 0 ;
-   printf("%s Testing Motor canid 1 \n", __func__);
+   printf("%s Testing Motor can_id 1 \n", __func__);
    position = position * -1 ;
    //SimpleMotorTest(*ControllerPtr, 1, position );
  }
@@ -558,7 +558,7 @@ namespace odrive_control
 		// TODO//( l5 l3 should be initialised before l4 second)
 
 		ROS_INFO("$s >>%s, Initialisation Request Recieved",__func__, joint_names_[joint_id].c_str());
-		ROS_ERROR("%s >>%s, Initialisation Not done ", __func__, joint_names_[joint_id].c_str());
+		//ROS_ERROR("%s >>%s, Initialisation Not done ", __func__, joint_names_[joint_id].c_str());
 		int LocalCanID = CanID[joint_id];		// Set the Encoder is_ready to true
 
 		int limit_switch_gpio_value = gpio_read(pi, limit_switch_id_[joint_id]);
@@ -631,7 +631,7 @@ namespace odrive_control
 		target = reference_target_[joint_id] * transmission_factor_[joint_id] * encoder_resolution_[joint_id] * direction_[joint_id];
 
 		// target_step *= direction_[joint_id];
-#define DEBUGWITHOUTLIMITSWITCH  true
+#define DEBUGWITHOUTLIMITSWITCH  false
                 if (DEBUGWITHOUTLIMITSWITCH) { 
                 ROS_ERROR ("%s this is workaround code without LimitSwitch \n",__func__) ;
                 target_tmp = target ;
@@ -1083,7 +1083,9 @@ namespace odrive_control
                             int motor_id = axis_id_[joint_id];
                             //if (DEBUGWRITE) ROS_INFO("MOTOR ID %d and joint id %d ", (int)motor_id, (int)joint_id);
                             //odrive_serial_interface_[joint_id]->Write_command_float(ODRV_MOVE_TO_POSE, motor_id, output_value);
-                            CanBusController.set_pos_setpoint( CanID[joint_id], output_value,0.0, 0.0) ; 
+                            CanBusController.set_pos_setpoint( CanID[joint_id], output_value,0.0, 0.0) ;
+							double encoder_value =  CanBusController.GetPositionEstimate( CanID[joint_id]);
+							ROS_ERROR(" can_id %d encoder_value for the homing pos : %lf ", CanID[joint_id], encoder_value); 
                             if (DEBUGWRITE) ROS_INFO("%s value %lf  CanNodeID  %d, joint_id : %d MotorId : %d\n",__func__ , output_value,  CanID[joint_id], joint_id, motor_id);
                             last_joint_position_command_[joint_id] = joint_position_command_[joint_id];
                         }
@@ -1111,7 +1113,6 @@ namespace odrive_control
 		// pos_jnt_sat_interface_.enforceLimits(period);
 	}
 } // namespace odrive_control
-
 
 
 

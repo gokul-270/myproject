@@ -83,7 +83,7 @@ joint3_init:
   zero_poses: [0.0] #0.261799 previouslu now '0' by gokul
 joint4_init:
   park_position: 0.01    #-0.65 -(previous value for rotation movement)        # in radians
-  homing_position: 0.00001
+  homing_position: 0.00001 
   multiple_zero_poses: false  #this for multiple poses of joint 4, where left position and right position is given,
   #zero_poses: [1.28319,1.0472,0.81121,-0.81121,-1.0472,-1.28319] #-0.523599
   #zero_poses: [2.09,1.57,1.047,-1.047,-1.57,-2.09] #-0.523599
@@ -91,11 +91,11 @@ joint4_init:
   theta_jerk_value: 0.0
 
 joint5_init:
-  park_position: 0.218  #change for new design 218=163+50(end_effector)+5(homing pos)-by gokul    # in meters
-  homing_position: 0.218 #change for new design (0.218)-by gokul  # in meters
-  end_effector_len: 0.050    #Four Roller End Effector Length=49 mm //Non Roller Length=81 mm //Cam with Roller=99mm //calibration pointer length =95 mm
+  park_position: 0.230  #change for new design (0.163) from (0.252)-by gokul    # in meters
+  homing_position: 0.230 #change for new design (0.163) from (0.252)-by gokul  # in meters
+  end_effector_len: 0.000    #Four Roller End Effector Length=49 mm //Non Roller Length=81 mm //Cam with Roller=99mm //calibration pointer length =95 mm
   joint5_vel_limit: 2 # 0.65 #joint 5 speed in m/s
-  min_length: 0.163          #0.295    # the compressed lenght
-  max_length: 0.601    # maximum lenght of the arm
+  min_length: 0.225          #0.295    # the compressed lenght
+  max_length: 0.580    # maximum lenght of the arm
   gear_ratio: 20.943933333  # gear ratio of the pully, have to be calculated talk to mani for the calculations
   phi_jerk_value: 0.0

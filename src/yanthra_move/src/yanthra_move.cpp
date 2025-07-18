@@ -1,5 +1,5 @@
-    
-// Last Updated : 06SEP2023
+
+// Last Updated : 24JUN2025
 //History :
 // 06SEP2023 : replaced xyz_to_polar to ConvertXYZToPolarFLUROSCoordinates
 // 23AUG2023 - The following changes are getting done(to fix a bug in ros publishing and ensure that yanthra_move deals with 
@@ -81,19 +81,19 @@ std::string PRAGATI_INSTALL_DIR = "/home/ubuntu/Desktop/pragati/" ;
 char PRAGATI_INPUT_DIR[MaxFileLength] ;
 char PRAGATI_OUTPUT_DIR[MaxFileLength] ;
 
-int vaccum_motor_on_pin = 18;
+int vaccum_motor_on_pin = 24;
 //int vaccum_motor_pwm_pin = 18;
 //int vaccum_motor_highspeed_pin = 25;
 int vaccum_on = 1;
 int vaccum_off = 0;
 int end_effector_on_pin = 21;
-int end_effector_direction_pin = 6;
+int end_effector_direction_pin = 13;
 int end_effector_drop_on = 19;
-int end_effector_drop_direction = 13;
+int end_effector_drop_direction = 12;
 int end_effector_on = 1;
 int end_effector_off = 0;
 int CLOCKWISE = 1 ;
-int ANTICLOCKWISE = 0 ;
+int ANTICLOCKWISE = 1 ;
 int DROP_EEF = 1 ;
 int STOP_EEF = 0 ;
 int EndEffectorDirection = CLOCKWISE ;
@@ -105,7 +105,7 @@ int led_on = 0;
 int led_off = 1;
 int cotton_drop_servo_pin = 12;
 int transport_servo_pin = 14;
-int solenoid_shutter_pin = 24;//This Pin is Assigned was fan previously
+int solenoid_shutter_pin = 18;//This Pin is Assigned was fan previously
 int camera_led_pin = 17;
 int shutdown_switch = 2; 
 int start_switch = 3;
@@ -2209,11 +2209,12 @@ int main(int argc, char** argv)
                             ROS_INFO("picked number: %d ", picked);
                             ROS_WARN( "YANTHRA_MOVING_TO_THE_TARGET_POSITION_WHICH_IS_AT RLINK5_ORIGIN : %f, THETALINK4 : %f ,PHILINK3 :%f ",rLink5_origin,thetaLink4, phiLink3) ;
 
-                          joint_move_4.move_joint( thetaLink4, WAIT);
-                          ROS_WARN("\n\n thetalink4 value is : %f",thetaLink4);
+                          joint_move_4.move_joint(thetaLink4, WAIT);
+                          ROS_WARN("\n\n thetalink4 value is : %f",joint4_pose + thetaLink4);
+                          ROS_WARN("\n joint4_pose value is  : %f",joint4_pose);
                           joint_move_3.move_joint(joint3_pose + phiLink3 ,WAIT);
-                          ROS_ERROR("\n joint3_pose:%f",joint3_pose);
-                          ROS_ERROR("phiLink3 : %f ",phiLink3);
+                          ROS_WARN("\n joint3_pose:%f",joint3_pose);
+                          ROS_WARN("phiLink3 : %f ",phiLink3);
 //By Mani Radhakrishnan:Changes from RFD to FLU
 //                            joint_move_4.move_joint(joint3_pose + thetaLink4, WAIT);
 //                            joint_move_3.move_joint(joint4_pose + phiLink3,WAIT);
@@ -2319,6 +2320,8 @@ int main(int argc, char** argv)
                                // SetEndEffectorDirection(CLOCKWISE) ;
                                 EndEffector(true); // 19-OCT-2022
                                 VacuumPump("true") ;
+                                ROS_WARN("Opening Shutter \n");
+                                cotton_drop_solenoid_shutter();
                             }
                             // Run the EndEffector for EERunDuringReverseRotation
 
@@ -2428,9 +2431,9 @@ int main(int argc, char** argv)
 
                     //lid_open.command(0);
                     //cotton_drop_shutter();
-	            ROS_WARN("Opening Shutter");
+	            ROS_WARN("Opening Shutter \n");
                     ros::Duration(MIN_SLEEP_TIME_FOR_COTTON_DROP).sleep();
-		    cotton_drop_solenoid_shutter();
+		   // cotton_drop_solenoid_shutter();
                     // Activate Transport unit to continue picking.
                     // TransportUnitActivate() ;
 
@@ -2447,11 +2450,10 @@ int main(int argc, char** argv)
         }
         /* Move joint4 to align with the row, so that height can be changed */
         joint_move_5.move_joint(joint5_homing_position, WAIT);//TODO This homing Position is different from Initialisation homing position but both can be same
-        ROS_WARN("\n joint5_homing_position :%f",joint5_homing_position);
-        ros::Duration(MIN_SLEEP_TIME_FORMOTOR_MOTION ).sleep();
-        //ros::Duration(2).sleep();
+        ROS_WARN(" joint5_homing_position :%f",joint5_homing_position);
+	//ros::Duration(2).sleep();
         joint_move_4.move_joint(joint4_homing_position, WAIT); // TODO move it to joint4_homing_position
-        joint_move_3.move_joint(joint3_homing_position, WAIT); 
+        joint_move_3.move_joint(joint3_homing_position, WAIT); //add by gokul
         ROS_WARN("JOINT3_HOMING_POSITION :%f ",joint3_homing_position);
         ros::Duration(MIN_SLEEP_TIME_FORMOTOR_MOTION ).sleep();
         //ros::Duration(0.200).sleep();

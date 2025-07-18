@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--04_jan_2024 dcsf-->
+<!--04_jan_2025 dcsf-->
 <!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
@@ -63,7 +63,7 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
+        xyz="0 0 -0.445"
         rpy="0 0 0" />
       <geometry>
         <mesh
@@ -89,7 +89,7 @@
     name="joint2"
     type="prismatic">
     <origin
-      xyz="-0.0040418 0.002 0.47813"
+      xyz="0.000 0.000 0.47813"
       rpy="0 0 0" />
     <parent
       link="base_link" />
@@ -121,7 +121,7 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
+        xyz="0 -0.3 -0.445"
         rpy="0 0 0" />
       <geometry>
         <mesh
@@ -130,7 +130,7 @@
       <material
         name="">
         <color
-          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+          rgba="0.292156862745098 0.119607843137255 0.933333333333333 1" />
       </material>
     </visual>
     <collision>
@@ -147,7 +147,7 @@
     name="joint4"
     type="prismatic">
     <origin
-      xyz="0.0012918 0.27902 0"
+      xyz="0.000 0.200 0"
       rpy="0 0 0" />
     <parent
       link="link2" />
@@ -156,8 +156,8 @@
     <axis
       xyz="0 1 0" />
     <limit
-      lower="-0.250"
-      upper="0.250"
+      lower="-0.195"
+      upper="0.260"
       effort="0"
       velocity="0" />
   </joint>
@@ -179,8 +179,8 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
+        xyz="0.35 -0.297 -0.405"
+        rpy="0 -0.785 0" />
       <geometry>
         <mesh
           filename="package://robo_description/meshes/link7.STL" />
@@ -205,7 +205,7 @@
     name="joint7"
     type="fixed">
     <origin
-      xyz="0.039 0 0.068054" 
+      xyz="0.038738 0.000 0.06854"
       rpy="0 0.7854 0" />
     <parent
       link="link4" />
@@ -283,8 +283,8 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
+        xyz="-0.285 0.410 -0.385"
+        rpy="0 0.7854 -1.5708" />
       <geometry>
         <mesh
           filename="package://robo_description/meshes/camera_link.STL" />
@@ -309,7 +309,7 @@
     name="camera_link_joint"
     type="fixed">
     <origin
-      xyz="-0.020 0 0.01705"
+      xyz="-0.066 0.00 0.01750"
       rpy="0 0 0" />
     <parent
       link="camera_mount_link" />
@@ -441,7 +441,7 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
+        xyz="0.066 -0.313 -0.345"
         rpy="0 0 0" />
       <geometry>
         <mesh
@@ -450,7 +450,7 @@
       <material
         name="">
         <color
-          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+          rgba="0.592156862745098 0.79607843137255 0.233333333333333 1" />
       </material>
     </visual>
     <collision>
@@ -467,7 +467,7 @@
     name="joint3"
     type="revolute">
     <origin
-      xyz="-0.050 0.0085 -0.1115"
+      xyz="-0.0503 0.000 -0.1105"
       rpy="0 0.35985 0" />
     <parent
       link="link4" />
@@ -523,7 +523,7 @@
     name="yanthra_joint"
     type="fixed">
     <origin
-      xyz="0 -0.070 0"
+      xyz="0 -0.05758 0"
       rpy="0 0 0" />
     <parent
       link="link3" />
@@ -601,7 +601,7 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
+        xyz="-0.132 -0.255 -0.35"
         rpy="0 0 0" />
       <geometry>
         <mesh
@@ -627,7 +627,7 @@
     name="joint5"
     type="prismatic">
     <origin
-      xyz="0.163 0 0"
+      xyz="0.225 0 0"
       rpy="0 0 0" />
     <parent
       link="link5_origin" />
@@ -636,8 +636,8 @@
     <axis
       xyz="1 0 0" />
     <limit
-      lower="0.163"
-      upper="0.65"
+      lower="0.225"
+      upper="0.580"
       effort="0"
       velocity="0" />
   </joint>
@@ -659,7 +659,7 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
+        xyz="-0.17 -0.255 -0.35"
         rpy="0 0 0" />
       <geometry>
         <mesh
@@ -685,7 +685,7 @@
     name="ee_joint"
     type="fixed">
     <origin
-      xyz="0.020 0 0"
+      xyz="0.000 0 0"
       rpy="0 0 0" />
     <parent
       link="link5" />
@@ -802,3 +802,4 @@
   </gazebo>
 
 </robot>
+

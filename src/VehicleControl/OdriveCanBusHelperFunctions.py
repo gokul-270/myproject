@@ -4,6 +4,10 @@ import numpy
 import binascii
 import struct
 import time
+DebugCan = False 
+def printCanMsg(msg):
+  if (DebugCan):
+    print(msg)
 
 def ReadAxisStatusFromCANHeartBeat(bus, CanID):
   HeartBeatCMD = 0x01
@@ -25,8 +29,8 @@ def ReadAxisStatusFromCANHeartBeat(bus, CanID):
                                  | (message.data[0]))
                    cur_state  = message.data[4]
                    con_status = message.data[7]
-                   print(str(axis_err) + '  ' + str(cur_state) + '  ' + str(con_status))
-                   print(message)
+                   printCanMsg(str(axis_err) + '  ' + str(cur_state) + '  ' + str(con_status))
+                   printCanMsg(message)
                    return (axis_err) 
 
 
@@ -41,13 +45,22 @@ def GetPositionAndVelocity(bus, CanID) :
  bus.send(message)
 
  while True:
+     print("MR:KEEP READING MSG >>ODRIVE HELPERFUNC")
+     #time.sleep(0.1)
+     #CMDPositionVelocity = 0x09
+     #ArbitrationID = CanID << 5 | CMDPositionVelocity 
+     #message = can.Message(arbitration_id = ArbitrationID , is_remote_frame = True, is_extended_id = False)
+     #bus.send(message)
+     #time.sleep(0.1)
      message = bus.recv()
-     print(message)
+     printCanMsg(message)
      ReceivedCanID = (message.arbitration_id & (0x3E0)) >> 5 
      ReceivedCMDID = message.arbitration_id & (0x01F)
-     print( "ReceivedCanID ", ReceivedCanID )
-     print( "ReceivedCMDID ", ReceivedCMDID  )
-     
+#     printCanMsg( "ReceivedCanID " + str( ReceivedCanID) )
+#     printCanMsg( "ReceivedCMDID " + str( ReceivedCMDID)  )
+     print( "ReceivedCanID " + str( ReceivedCanID) )
+     print( "ReceivedCMDID " + str( ReceivedCMDID)  )
+     print("MR:ODRIVE HELPERFUNC")
      if ( (message.dlc > 7) and (ReceivedCMDID == CMDPositionVelocity ) and (ReceivedCanID == CanID)) :
         rxd1 = "{:02x}".format(message.data[0])
         rxd2 = "{:02x}".format(message.data[1])
@@ -66,7 +79,8 @@ def GetPositionAndVelocity(bus, CanID) :
         fdata = struct.unpack('<f', binascii.unhexlify(rxdata2.replace(' ', '')))[0]
         velocity = fdata
 
-        print('position : ' + str((position)))
-        print('velocity : ' + str((velocity)))
+        printCanMsg('position : ' + str((position)))
+        printCanMsg('velocity : ' + str((velocity)))
+        print("MR:ODRIVE HELPERFUNC,float(position), float(velocity)",float(position), float(velocity))
         return( float(position), float(velocity))    
 
