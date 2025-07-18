@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Load example URDF -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find robo_description)/urdf/URDF'" />
+  <!-- This is required for publishing the dynamic tf transforms -->
+  <!--  Load the robot_state_publisher node  -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" /> 
+
+
+  <arg name="output_log" default="log" />
+
+  <rosparam file="$(find yanthra_move)/config/yanthra_move_ArucoMarkerTest.yaml" command="load" />
+
+  <node name="yanthra_move" pkg="yanthra_move" type="yanthra_move"
+    output="$(arg output_log)" required="true" />
+</launch>
+

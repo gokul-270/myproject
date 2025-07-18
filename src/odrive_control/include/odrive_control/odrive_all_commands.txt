@@ -1,0 +1,87 @@
+***************************************************
+***************************************************
+       ODrive control utility v0.4.10.dev
+***************************************************
+***************************************************
+
+erase_configuration()
+brake_resistor_armed = True (bool)
+hw_version_variant = 24 (int)
+get_oscilloscope_val(index: int)
+test_function(delta: int)
+get_adc_voltage(gpio: int)
+vbus_voltage = 12.043871879577637 (float)
+reboot()
+system_stats:
+  min_stack_space_axis0 = 7788 (int)
+  min_stack_space_startup = 612 (int)
+  min_stack_space_uart = 3932 (int)
+  min_stack_space_usb = 3292 (int)
+  usb: ...
+  min_stack_space_axis1 = 7868 (int)
+  uptime = 65904 (int)
+  min_stack_space_comms = 12956 (int)
+  i2c: ...
+  min_heap_space = 4216 (int)
+  min_stack_space_usb_irq = 1796 (int)
+user_config_loaded = True (bool)
+fw_version_major = 0 (int)
+config:
+  gpio4_pwm_mapping: ...
+  gpio2_pwm_mapping: ...
+  enable_ascii_protocol_on_usb = True (bool)
+  enable_uart = True (bool)
+  brake_resistance = 0.4699999988079071 (float)
+  gpio3_analog_mapping: ...
+  gpio3_pwm_mapping: ...
+  dc_bus_overvoltage_trip_level = 25.68000030517578 (float)
+  enable_i2c_instead_of_can = False (bool)
+  gpio4_analog_mapping: ...
+  dc_bus_undervoltage_trip_level = 8.0 (float)
+  gpio1_pwm_mapping: ...
+axis1:
+  trap_traj: ...
+  encoder: ...
+  lockin_state = 0 (int)
+  loop_counter = 514416 (int)
+  sensorless_estimator: ...
+  motor: ...
+  controller: ...
+  step_dir_active = False (bool)
+  error = 0x0000 (int)
+  requested_state = 0 (int)
+  current_state = 1 (int)
+  config: ...
+  watchdog_feed()
+hw_version_minor = 6 (int)
+test_property = 0 (int)
+fw_version_minor = 4 (int)
+axis0:
+  trap_traj: ...
+  encoder: ...
+  lockin_state = 0 (int)
+  loop_counter = 514441 (int)
+  sensorless_estimator: ...
+  motor: ...
+  controller: ...
+  step_dir_active = False (bool)
+  error = 0x0000 (int)
+  requested_state = 0 (int)
+  current_state = 8 (int)
+  config: ...
+  watchdog_feed()
+save_configuration()
+hw_version_major = 3 (int)
+fw_version_unreleased = 0 (int)
+can:
+  TxMailboxCompleteCallbackCnt = 0 (int)
+  received_msg_cnt = 0 (int)
+  unexpected_errors = 0 (int)
+  node_id = 0 (int)
+  unhandled_messages = 0 (int)
+  received_ack = 0 (int)
+  TxMailboxAbortCallbackCnt = 0 (int)
+enter_dfu_mode()
+serial_number = 2078327A4D4B (int)
+fw_version_revision = 10 (int)
+

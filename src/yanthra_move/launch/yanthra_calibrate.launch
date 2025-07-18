@@ -1,0 +1,9 @@
+<launch>
+  <arg name="output_log" default="log" />
+
+  <rosparam file="$(find yanthra_move)/config/yanthra_move_calibration_mode.yaml" command="load" />
+
+  <node name="yanthra_move" pkg="yanthra_move" type="yanthra_move"
+    output="$(arg output_log)" required="true" />
+</launch>
+

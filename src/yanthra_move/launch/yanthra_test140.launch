@@ -1,0 +1,9 @@
+<launch>
+  <arg name="output_log" default="log" />
+
+  <rosparam file="$(find yanthra_move)/config/yanthra_move_test140.yaml" command="load" />
+
+  <node name="yanthra_test140_node" pkg="yanthra_move" type="yanthra_test140"
+    output="$(arg output_log)" required="true" />
+</launch>
+

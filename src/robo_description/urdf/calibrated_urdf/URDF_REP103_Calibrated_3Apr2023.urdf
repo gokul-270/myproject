@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="robo_description">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-5.13826234849775E-17 -1.63904738952765E-17 0.339473684210526"
+        rpy="0 0 0" />
+      <mass
+        value="19" />
+      <inertia
+        ixx="2.34956140350877"
+        ixy="1.11311423041845E-17"
+        ixz="3.69215798456927E-16"
+        iyy="2.34956140350877"
+        iyz="-7.44985984223617E-17"
+        izz="0.151666666666667" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link2">
+    <inertial>
+      <origin
+        xyz="0.167167515747504 0.00278967190212447 -0.0993654854983734"
+        rpy="0 0 0" />
+      <mass
+        value="3.13280329013611" />
+      <inertia
+        ixx="0.0169430024052603"
+        ixy="-0.00280446630124331"
+        ixz="0.0223183329111622"
+        iyy="0.162057682822749"
+        iyz="0.000505061238040558"
+        izz="0.161640952999751" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="prismatic">
+    <origin
+      xyz="0.002535 0 1"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="1"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link4">
+    <inertial>
+      <origin
+        xyz="-0.000438554587764983 0.0620490502692163 -0.172885898172371"
+        rpy="0 0 0" />
+      <mass
+        value="0.162146723185788" />
+      <inertia
+        ixx="0.00336616371871891"
+        ixy="1.46811284877534E-06"
+        ixz="-3.57096843523024E-06"
+        iyy="0.00312866852492012"
+        iyz="0.00048231220150353"
+        izz="0.000338308018448651" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="0.4665 0 -0.21"
+      rpy="0 0 0" />
+    <parent
+      link="link2" />
+    <child
+      link="link4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.9671"
+      upper="2.9671"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link3">
+    <inertial>
+      <origin
+        xyz="-0.0832189655707039 -0.0894795892974461 -0.00179630042130147"
+        rpy="0 0 0" />
+      <mass
+        value="1.71811977068641" />
+      <inertia
+        ixx="0.00948440583507882"
+        ixy="-0.00159429497921182"
+        ixz="0.00308193362516688"
+        iyy="0.035537875179704"
+        iyz="0.000648421421055908"
+        izz="0.0305779645247813" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="-0.00058161 0.077824 -0.35472"
+      rpy="0 0 0" />
+    <parent
+      link="link4" />
+    <child
+      link="link3" />
+    <axis
+      xyz="0 -1 0" />
+    <limit
+      lower="-1.5708"
+      upper="1.5708"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="yanthra_link">
+    <inertial>
+      <origin
+        xyz="-0.0832189655707036 -0.0114795892974462 -0.00179630042130124"
+        rpy="0 0 0" />
+      <mass
+        value="1.71811977068641" />
+      <inertia
+        ixx="0.00948440583507882"
+        ixy="-0.00159429497921182"
+        ixz="0.0030819336251669"
+        iyy="0.035537875179704"
+        iyz="0.000648421421055907"
+        izz="0.0305779645247813" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/yanthra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/yanthra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="yanthra_joint"
+    type="fixed">
+    <origin
+      xyz="0 -0.078 0"
+      rpy="0 0 0" />
+    <parent
+      link="link3" />
+    <child
+      link="yanthra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="link5">
+    <inertial>
+      <origin
+        xyz="0.108132413871145 2.08242781028485E-06 0.00569147154470495"
+        rpy="0 0 0" />
+      <mass
+        value="0.277404400359573" />
+      <inertia
+        ixx="0.00021628976171093"
+        ixy="1.27900715148446E-06"
+        ixz="-0.000135093187106687"
+        iyy="0.00359200319167061"
+        iyz="-8.36237914028336E-08"
+        izz="0.00358633509004247" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="prismatic">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="yanthra_link" />
+    <child
+      link="link5" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="0"
+      upper="0.439"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link7">
+    <inertial>
+      <origin
+        xyz="-0.00129487747822488 -0.0114795892973884 0.11996423535158"
+        rpy="0 0 0" />
+      <mass
+        value="1.71811977068641" />
+      <inertia
+        ixx="0.0113386071435481"
+        ixy="-0.00171490439294498"
+        ixz="-0.00672100859249017"
+        iyy="0.0355378751797041"
+        iyz="-0.0001460470577602"
+        izz="0.0287237632163119" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/link7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint7"
+    type="fixed">
+    <origin
+      xyz="-0.13653 0 -0.10927"
+      rpy="0 0.47124 0" />
+    <parent
+      link="yanthra_link" />
+    <child
+      link="link7" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="camera_mount_link">
+    <inertial>
+      <origin
+        xyz="-0.00129487747822488 -0.0114795892973883 0.11996423535158"
+        rpy="0 0 0" />
+      <mass
+        value="1.71811977068641" />
+      <inertia
+        ixx="0.0113386071435481"
+        ixy="-0.00171490439294498"
+        ixz="-0.00672100859249018"
+        iyy="0.0355378751797041"
+        iyz="-0.000146047057760202"
+        izz="0.0287237632163119" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/camera_mount_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/camera_mount_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="camera_mount_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="-1.5708 0 -1.5708" />
+    <parent
+      link="link7" />
+    <child
+      link="camera_mount_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="camera_link">
+    <inertial>
+      <origin
+        xyz="-0.00874999999999998 0.0375 -0.00507843424240889"
+        rpy="0 0 0" />
+      <mass
+        value="0.0438088883035136" />
+      <inertia
+        ixx="3.24913884800222E-05"
+        ixy="1.33063310958086E-21"
+        ixz="-8.470329472543E-22"
+        iyy="3.99574478810853E-06"
+        iyz="-3.38875204913906E-21"
+        izz="3.07317223657389E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/camera_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robo_description/meshes/camera_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="camera_link_joint"
+    type="fixed">
+    <origin
+      xyz="0.0181929 -0.00577106 0.0294445"
+      rpy="0.130567 0.00484497 0.0170606" />
+    <parent
+      link="camera_mount_link" />
+    <child
+      link="camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link name="camera_depth_frame">
+
+    <visual>
+
+    <origin xyz="0 0 0" rpy="0 0 0" />
+
+      <geometry>
+
+        <box size="0.001 0.001 0.001"/>
+
+      </geometry>
+
+    </visual>
+
+  </link>
+
+  <joint name="camera_depth_frame_joint" type="fixed">
+
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+
+    <parent link="camera_link"/>
+
+    <child link="camera_depth_frame"/>
+
+  </joint>
+
+  <link name="camera_depth_optical_frame">
+
+    <visual>
+
+    <origin xyz="0 0 0" rpy="0 0 0" />
+
+      <geometry>
+
+        <box size="0.001 0.001 0.001"/>
+
+      </geometry>
+
+    </visual>
+
+  </link>
+
+  <joint name="camera_depth_optical_frame_joint" type="fixed">
+
+   <origin rpy="0 0 0" xyz="0 0 0"/>
+
+   <parent link="camera_depth_frame"/>
+
+   <child link="camera_depth_optical_frame"/>
+
+  </joint>
+
+  <link name="camera_color_frame">
+
+    <visual>
+
+    <origin xyz="0 0 0" rpy="0 0 0" />
+
+      <geometry>
+
+        <box size="0.001 0.001 0.001"/>
+
+      </geometry>
+
+    </visual>
+
+  </link>
+
+  <joint name="camera_color_frame_joint" type="fixed">
+
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+
+    <parent link="camera_link"/>
+
+    <child link="camera_color_frame"/>
+
+  </joint>
+
+  <link name="camera_color_optical_frame">
+
+    <visual>
+
+    <origin xyz="0 0 0" rpy="0 0 0" />
+
+      <geometry>
+
+        <box size="0.001 0.001 0.001"/>
+
+      </geometry>
+
+    </visual>
+
+  </link>
+
+  <joint name="camera_color_optical_frame_joint" type="fixed">
+
+   <origin rpy="0 0 0" xyz="0 0 0"/>
+
+   <parent link="camera_color_frame"/>
+
+   <child link="camera_color_optical_frame"/>
+
+  </joint>
+  <gazebo reference="stand">
+
+    <material>Gazebo/Grey</material>
+
+  </gazebo>
+
+  <gazebo reference="link3">
+
+    <material>Gazebo/Green</material>
+
+  </gazebo>
+
+  <gazebo reference="link4">
+
+    <material>Gazebo/Red</material>
+
+  </gazebo>
+
+  <gazebo reference="link5">
+
+    <material>Gazebo/Green</material>
+
+  </gazebo>
+
+  <gazebo reference="link9">
+
+    <material>Gazebo/Red</material>
+
+  </gazebo>
+
+  <gazebo reference="link6">
+
+    <material>Gazebo/White</material>
+
+  </gazebo>
+
+  <transmission name="tran1">
+
+    <type>transmission_interface/SimpleTransmission</type>
+
+    <joint name="joint3">
+
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+
+    </joint>
+
+    <actuator name="motor1">
+
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+
+      <mechanicalReduction>1</mechanicalReduction>
+
+    </actuator>
+
+  </transmission>
+
+  <transmission name="tran1">
+
+    <type>transmission_interface/SimpleTransmission</type>
+
+    <joint name="joint4">
+
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+
+    </joint>
+
+    <actuator name="motor1">
+
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+
+      <mechanicalReduction>1</mechanicalReduction>
+
+    </actuator>
+
+  </transmission>
+
+  <transmission name="tran1">
+
+    <type>transmission_interface/SimpleTransmission</type>
+
+    <joint name="joint5">
+
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+
+    </joint>
+
+    <actuator name="motor1">
+
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+
+      <mechanicalReduction>1</mechanicalReduction>
+
+    </actuator>
+
+  </transmission>
+
+  <gazebo>
+
+    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+
+      <robotNameSpace>/arm_controller</robotNameSpace>
+
+    </plugin>
+
+  </gazebo>
+
+</robot>

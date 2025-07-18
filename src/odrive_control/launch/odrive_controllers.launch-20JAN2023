@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="debug" default="false" />
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+  <arg if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+
+  <node name="odrive_control" pkg="odrive_control" type="odrive_control"
+        output="screen" launch-prefix="$(arg launch_prefix)" required="true" />
+
+  <rosparam file="$(find odrive_control)/config/odrive_controllers.yaml" command="load" />
+
+  <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false"
+        output="screen"
+        args="spawn
+              joint_state_controller
+              joint2_position_controller
+              joint3_position_controller
+              joint4_position_controller
+              joint5_position_controller" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <!-- Load example URDF -->
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find robo_description)/urdf/URDF'" />
+  <!--<node name="limit_switch_publsher" pkg="limit_switch_publisher" type="limit_switch_state_publisher.py"/> -->
+</launch>

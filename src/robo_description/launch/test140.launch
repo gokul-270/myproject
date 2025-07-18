@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="output_log" default="log" />
+
+  <include file="$(find odrive_control)/launch/odrive_controllers.launch" >
+  </include>
+
+  <include file="$(find yanthra_move)/launch/yanthra_test140.launch" >
+    <arg name="output_log" value="$(arg output_log)" />
+  </include>
+
+</launch>

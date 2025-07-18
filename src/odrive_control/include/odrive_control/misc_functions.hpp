@@ -1,0 +1,20 @@
+#ifndef _MF_H_
+#define _MF_H_
+
+
+#include<cstring>
+#include"odrive_can_functions.hpp"
+
+using namespace std;
+
+void bit_masking(can_frame_odrive &can_frame);
+void sort_can_node_id(odrive_motor (&legs)[4][3],can_frame_odrive &msg);
+void float2Bytes(float float_variable, uint8_t *bytes_temp);
+void bytes2Float(uint8_t *bytes_temp, float *float_variable);
+double CurrentTimeInMillisec();
+bool CheckForTimeOut(double TimeOutValue, double StartTime) ;
+void handle_segfault(int sig);
+void PrintThreadID();
+
+
+#endif /* _MF_H_ */

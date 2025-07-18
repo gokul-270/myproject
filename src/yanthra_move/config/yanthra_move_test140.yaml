@@ -1,0 +1,97 @@
+CAPTURE_MODE : 3
+YanthraDisparityShift : 15
+UsePostProcessingFilter : true
+UseThresholdFilter : false
+UseSpatialFilter : true
+SpatialFilterHoleFillingMode : 1
+TemporalFilterPersistenceControl : 7
+UseTemporalFilter : false
+PRAGATI_BYPASS_INTERNAL_PROCESSING : false
+hardware_timeout : 1200000  #10s hardware timeout
+
+arm_calibration : false
+### Change YoloThreshold to higher value for higher prediction certainty
+YoloThreshold : 0.55          
+continous_operation:  true   # This is for controlling whether the repeated hight scan should
+YanthraLabCalibrationTesting: false
+global_vaccum_motor :  true  # This is for controlling the vaccum motor from yanthra_move by pubishing a topic 
+trigger_camera : false #Added on Jun72023:having option to trigger to camera for whole test
+end_effector_enable :  true  # This is for controlling the endeffector from yanthra_move by pubishing a topic 
+save_logs : false
+reverse_endeffector: true   # for reversing the endeffector 
+jerk_enabled_theta:  false   # this experimental done for shaking the theta angle
+jerk_enabled_phi :  false    #  this is experiment done for shaking the phi angle check the code
+parking_on : true
+l2_homing_sleep_time: 6.0 # its the time required for the l2 to reach home from down to home  its in seconds
+l2_step_sleep_time:  5.0  #this is the ti   me required to move to the steps between the steps in l2
+l2_idle_sleep_time:  2.0  #this is the ti   me required to move to the steps between the steps in l2
+min_sleep_time_formotor_motion: 0.5 #minimum time for each motor
+
+joint_velocity : 1 # speed of arm
+joint_poses: 
+#      - [joint2, joint3, joint4,joint5] joint3 and joint4 in radians, joint2 in m, 1500mm from ground, Joint5 in meters
+#      - [0.021, 0.2181, -0.7853] # l3 is 15degree from horizontal, L2 = 0.25 is 1400-250 = 1150 ie 4 feet from the ground       - [0.72, 0.261799, 1.02]
+       - [0.0000, 0.0, 0.0, 0.0]
+#       - [0.00001, -0.2, -1.5708]
+#       - [0.00001, -0.785, 0.0001]
+#       - [0.00001, 0.00001, 0.00001]
+#       - [0.00001, -0.2, 1.91986]
+#       - [0.00001, -0.2, 1.39626]
+#       - [0.00001, -0.2, 0.872665]
+#       - [0.00001, -0.2, -1.91986]
+#       - [0.00001, -0.2, -1.39626]
+#       - [0.00001, -0.2, -0.872665]
+#       - [0.00001, -0.15, 1.71986, 0.247]
+#       - [0.00001, -0.15, 1.19626, 0.247]
+#       - [0.00001, -0.15, 0.672665, 0.247]
+#       - [0.00001, -0.15, -1.71986, 0.247]
+#       - [0.00001, -0.15, -1.19626, 0.247]
+#       - [0.00001, -0.15, -0.672665, 0.247]
+#       - [0.00001, 0.00001, -1.5708]
+#       - [0.00001, 0.00001, 1.3]
+#      - [0.151, 0.2181, -0.7853] # L2 Height is fixed 100mm from HOMING POSITION2, L4 (X angle) : 120 degree ( -2 radians)
+#      - [0.151, 0.2181, 0.7853]
+#      - [0.151, 0.2181, -1.5]
+#      - [0.245, 0.2181, 0.7853]# l3 is 0 radians  from horizontal
+#      - [0.245, 0.2181, 1.5] # L4 is -1.0 radian which is 120degrees from HOME POSITION, L4 (X angle) : 60 degree ( +1 radians)
+#      - [0.340, 0.2181, -0.7853]
+#      - [0.340, 0.2181, -1.5]
+#      - [0.435, 0.2181, -0.7853]
+#      - [0.435, 0.2181, -1.5]
+
+delays:
+  picking: 0.200  # in seconds
+  pre_start_len: 0.025 # in meters
+  end_effector_runtime: 1000  # in milliseconds
+  back_valve_close_delay: 500 # in milliseconds
+  EERunTimeDuringL5ForwardMovement: 1 #Delay to move Joint5 in forward direction
+  EERunTimeDuringL5BackwardMovement: 1
+
+joint2_init:
+  height_scan_enable: false #This is for enabling height scan if this is false the arm will not do the height scan
+  min: 0.01 #0.34   # if the height scan is enabled then the arm will start from top
+  max: 0.85 #0.80    # the maximum distance which the height scan can reach -- -its the lowest part
+  step: 0.125  # this will decide how many steps will be taken  each step will increamnet by this much distance in cm
+joint3_init:
+  park_position: 0.10  #This Value is wrt to HOMING Of Joint State Controller ,Tune it When YOu change the homing position 
+  homing_position: 0.00001 # This is a (0.5236) 30 degree, (0.2618radians : 15 degrees)  angle from horizontal in radians --> this is the position where the arm is gonna come and stay after intialization
+  multiple_zero_poses: true
+  zero_poses: [0.2618]
+joint4_init:
+  park_position: -0.65        # in radians
+  homing_position: 0.00001 
+  multiple_zero_poses: false  #this for multiple poses of joint 4, where left position and right position is given,
+  #zero_poses: [1.28319,1.0472,0.81121,-0.81121,-1.0472,-1.28319] #-0.523599
+  #zero_poses: [2.09,1.57,1.047,-1.047,-1.57,-2.09] #-0.523599
+  #zero_poses: [-1.57] #-0.523599
+  theta_jerk_value: 0.0
+
+joint5_init:
+  park_position: 0.252      # in meters
+  homing_position: 0.252 # in meters
+  end_effector_len: 0.085 #Four Roller End Effector Length=49 mm //Non Roller Length=81 mm //Cam with Roller=99mm //calibration pointer length =95 mm
+  joint5_vel_limit: 2 # 0.65 #joint 5 speed in m/s
+  min_length: 0.162        #0.295    # the compressed lenght
+  max_length: 0.601    # maximum lenght of the arm
+  gear_ratio: 20.943933333  # gear ratio of the pully, have to be calculated talk to mani for the calculations
+  phi_jerk_value: 0.0

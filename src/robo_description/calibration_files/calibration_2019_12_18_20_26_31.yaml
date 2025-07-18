@@ -1,0 +1,15 @@
+joint3_x: 58.4083
+joint3_y: 25.1805
+joint3_z: -45.905
+joint3_a: 0.198441
+joint3_b: 0.0281577
+joint3_c: 0.437412
+joint6_x: 0.0357178
+joint6_y: -0.000412313
+joint6_z: 0.00883235
+joint6_a: 0.0249769
+joint6_b: -0.0186573
+joint6_c: 0.01451
+depth_info: depth_2019_12_18_20_26_31.yaml
+rgb_info: rgb_2019_12_18_20_26_31.yaml
+urdf: calibrated_2019_12_18_20_26_31.urdf
